@@ -5,6 +5,7 @@ public class PartialDifferentialEquationSpline {
 	
 	private Function3 mF;
 	private InitConditions mCond;
+	private double mAccuracy;
 	private double o[][] = {
 			{0,0,0,0},
 			{0.5,0.5,0,0},
@@ -12,12 +13,15 @@ public class PartialDifferentialEquationSpline {
 			{1,0,0,1},
 			{1/6,1/3,1/3,1/6}
 			};
+	
 	private Function1 linFunction = new Function1() {
 		private double h;
+		private int n;
 
 		@Override
 		public double f (double x) {
-			h = x - mCond.x0;
+			n = (int) ((x - mCond.x0)*Math.cbrt((x - mCond.x0)/mAccuracy));
+			h = (x - mCond.x0)/n;
 			
 			return RungeKutta(new Function2() {
 				private double mY;
@@ -49,9 +53,10 @@ public class PartialDifferentialEquationSpline {
 		}
 	}
 	
-	public PartialDifferentialEquationSpline(Function3 f, double x0, double y0, double y1){
+	public PartialDifferentialEquationSpline(Function3 f, double x0, double y0, double y1, double accuracy){
 		mF = f;
 		mCond = new InitConditions(x0, y0, y1);
+		mAccuracy = accuracy;
 	}
 	
 	public Function1 getFunction(){
