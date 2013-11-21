@@ -1,10 +1,12 @@
 package com.tregubov.rkmethod.math;
 
+import java.util.List;
+
 
 public class PartialDifferentialEquationSpline {
 	
+	private List<InitConditions> mConditions;
 	private Function3 mF;
-	private InitConditions mCond;
 	private double mAccuracy;
 	private double o[][] = {
 			{0,0,0,0},
@@ -14,13 +16,12 @@ public class PartialDifferentialEquationSpline {
 			{1/6,1/3,1/3,1/6}
 			};
 	
-	private Function1 linFunction = new Function1() {
+	private Function1 resultF = new Function1() {
 		private double h;
-		private int n;
 
 		@Override
 		public double f (double x) {
-			n = (int) ((x - mCond.x0)*Math.cbrt((x - mCond.x0)/mAccuracy));
+			int n = (int) Math.ceil((x - mCond.x0)*Math.pow((x - mCond.x0)/mAccuracy, 0.25));
 			h = (x - mCond.x0)/n;
 			
 			return RungeKutta(new Function2() {
@@ -42,6 +43,24 @@ public class PartialDifferentialEquationSpline {
 			}, mCond.x0, mCond.y0, h);
 		}
 	};
+	private Function2 differencialF = new Function2() {
+		private double mY;
+
+		@Override
+		public double f (double x, double y) {
+			mY = y;
+			double h = x - oldx;
+			
+			return RungeKutta(new Function2() {
+				
+				@Override
+				public double f (double x, double y) {
+					return mF.f(x, mY, y);
+				}
+			}, mCond.x0, mCond.y1, h);
+		}
+
+	};
 	
 	private class InitConditions{
 		private double x0, y0, y1;
@@ -55,12 +74,16 @@ public class PartialDifferentialEquationSpline {
 	
 	public PartialDifferentialEquationSpline(Function3 f, double x0, double y0, double y1, double accuracy){
 		mF = f;
-		mCond = new InitConditions(x0, y0, y1);
+		mConditions.add(new InitConditions(x0, y0, y1));
 		mAccuracy = accuracy;
 	}
 	
+	public double getDifferencial(double x){
+		return differencialF.f(x, resultF.f(x));
+	}
+	
 	public Function1 getFunction(){
-		return linFunction;
+		return resultF;
 	}
 	
 	private double RungeKutta(Function2 f, double x0, double y0, double h){
