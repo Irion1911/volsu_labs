@@ -1,22 +1,26 @@
 package com.tregubov.rkmethod.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.tregubov.rkmethod.R;
+import com.tregubov.rkmethod.math.Function1;
 
 public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint axisColor;
 	private final int defColor = 0;
 	DrawThread drawThread;
+	
+	List<Function1> mFunctions = new ArrayList<Function1>();
 
 	public Graph(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -31,6 +35,10 @@ public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 	public Graph(Context context) {
 		super(context);
 		init(null);
+	}
+
+	public void addFunction (Function1 function) {
+		mFunctions.add(function);
 	}
 
 	private void init (AttributeSet attrs) {
@@ -75,39 +83,30 @@ public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 }
 
 class DrawThread extends Thread {
-	private boolean runFlag = false;
 	private SurfaceHolder surfaceHolder;
-	private Matrix matrix;
 	private long prevTime;
+	private boolean isRunning;
 
 	public DrawThread(SurfaceHolder surfaceHolder, Resources resources) {
 		this.surfaceHolder = surfaceHolder;
-
-		matrix = new Matrix();
-		matrix.postScale(3.0f, 3.0f);
-		matrix.postTranslate(100.0f, 100.0f);
-
 		prevTime = System.currentTimeMillis();
 	}
-
-	public void setRunning (boolean run) {
-		runFlag = run;
+	
+	public void setRunning(boolean run){
+		isRunning = run;
 	}
 
 	@Override
 	public void run () {
 		Canvas canvas;
-		while (runFlag) {
-			long now = System.currentTimeMillis();
-			long elapsedTime = now - prevTime;
-			if (elapsedTime > 30) {
-				prevTime = now;
-			}
+		while (isRunning) {
+			long elapsedTime = System.currentTimeMillis() - prevTime;
+
 			canvas = null;
 			try {
 				canvas = surfaceHolder.lockCanvas(null);
-				synchronized (surfaceHolder) {
-					canvas.drawColor(Color.BLACK);
+				synchronized (surfaceHolder) {//TODO рисовальная часть
+					canvas.drawColor((int) -elapsedTime);
 				}
 			} finally {
 				if (canvas != null) {

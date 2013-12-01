@@ -13,6 +13,9 @@ import com.tregubov.rkmethod.math.Target;
 
 public class MainActivity extends Activity implements OnClickListener {
 
+	//TODO завернуть в настройки
+	private double mAccuracy = 0.000001;
+	private int a = 0, b= 1;
 	Target mTarget = new Target(new Function3() {
 
 		@Override
