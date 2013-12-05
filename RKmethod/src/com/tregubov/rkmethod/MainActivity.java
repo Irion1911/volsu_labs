@@ -45,8 +45,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.button_function:
 			break;
 		case R.id.button_settings:
-			break;
-		case R.id.button_play:
+//			break;
+//		case R.id.button_play:
 			PartialDifferentialSpline spline = new PartialDifferentialSpline(mTarget.getFunction(), mTarget.getX(), mTarget.getY(), Optimization.GoldenSection(new Function1() {
 				
 				@Override
@@ -55,8 +55,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			}, a, b, mAccuracy), mAccuracy);
 			break;
-		case R.id.button_stop:
-			break;
+//		case R.id.button_stop:
+//			break;
 
 		}
 	}

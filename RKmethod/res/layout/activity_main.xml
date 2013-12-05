@@ -4,64 +4,86 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <!--
-         <TextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-    
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/text" />
-    -->
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/settings_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/panel_background_tile"
-        android:orientation="horizontal" >
+        android:background="#000" >
 
         <Button
             android:id="@+id/button_function"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/button_play"
             android:text="Target" />
+
+        <View
+            android:id="@+id/id_center"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/button_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_toLeftOf="@id/id_center"
             android:text="Play" />
 
         <Button
             android:id="@+id/button_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/id_center"
             android:text="Stop" />
 
         <Button
             android:id="@+id/button_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/button_stop"
             android:text="Settings" />
-    </LinearLayout>
+    </RelativeLayout>
 
-    <!-- <com.tregubov.rkmethod.widgets.Graph
+    <!--
+         <com.tregubov.rkmethod.widgets.Graph
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/settings_layout" /> -->
+        android:layout_below="@id/settings_layout" />
+    -->
+
+    <RelativeLayout
+        android:id="@+id/results_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#000"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical" >
+        
+        <TextView
+            android:id="@+id/result_length"
+          	android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/result_variable"
+            android:text="L(f(x)) = ?"
+            android:textColor="#fff"
+            android:textStyle="italic" />
+        
+        <TextView
+            android:id="@+id/result_variable"
+          	android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_alignParentRight="true"
+            android:text="f(1) = ?"
+            android:textColor="#fff"
+            android:textStyle="italic" />
+    </RelativeLayout>
 
 </RelativeLayout>
