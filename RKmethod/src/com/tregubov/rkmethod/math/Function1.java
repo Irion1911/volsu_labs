@@ -2,7 +2,7 @@ package com.tregubov.rkmethod.math;
 
 public abstract class Function1 {
 	
-	public double length(double a, double b){
+	private double length(double a, double b){
 		return Math.sqrt((f(a) - f(b))*(f(a) - f(b)) + (a-b)*(a-b));
 	}
 	
