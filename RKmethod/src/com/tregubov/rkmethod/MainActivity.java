@@ -1,7 +1,6 @@
 package com.tregubov.rkmethod;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -12,6 +11,7 @@ import com.tregubov.rkmethod.math.Function3;
 import com.tregubov.rkmethod.math.Optimization;
 import com.tregubov.rkmethod.math.PartialDifferentialSpline;
 import com.tregubov.rkmethod.math.Target;
+import com.tregubov.rkmethod.widgets.Graph;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -26,17 +26,26 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}, "y''+y'xe^y+arctg(x+y)+x^2 = 0", 0., Math.PI);
 
+	private Graph graph;
+	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		graph = (Graph) findViewById(R.id.graph);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	protected void onPause () {
+		super.onPause();
+		graph.surfaceDestroyed(null);
 	}
 
 	@Override

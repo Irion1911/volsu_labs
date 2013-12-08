@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,7 +19,12 @@ import com.tregubov.rkmethod.math.Function1;
 public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint axisColor;
 	private final int defColor = 0;
-	DrawThread drawThread;
+	private DrawThread drawThread;
+	
+	private double xMax, yMax, xMin, yMin;
+	private int xStep, yStep;
+	private Point zero;
+	
 	
 	List<Function1> mFunctions = new ArrayList<Function1>();
 
@@ -49,6 +55,8 @@ public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 			color = a.getDimensionPixelSize(R.styleable.Graph_axis_color, defColor);
 			a.recycle();
 		}
+		
+		xMax = yMax = xMin = yMin = 1;
 
 		axisColor = new Paint();
 		axisColor.setColor(color);
@@ -62,51 +70,60 @@ public class Graph extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceCreated (SurfaceHolder holder) {
 		drawThread = new DrawThread(getHolder(), getResources());
-		drawThread.setRunning(true);
 		drawThread.start();
 	}
 
 	@Override
 	public void surfaceDestroyed (SurfaceHolder holder) {
-		boolean retry = true;
-
-		drawThread.setRunning(false);
-		while (retry) {
-			try {
-				drawThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-			}
-		}
+		drawThread.end();
 	}
 
 }
 
 class DrawThread extends Thread {
 	private SurfaceHolder surfaceHolder;
-	private long prevTime;
 	private boolean isRunning;
 
 	public DrawThread(SurfaceHolder surfaceHolder, Resources resources) {
 		this.surfaceHolder = surfaceHolder;
-		prevTime = System.currentTimeMillis();
 	}
 	
-	public void setRunning(boolean run){
-		isRunning = run;
+	@Override
+	public synchronized void start () {
+		isRunning = true;
+		super.start();
 	}
-
+	
+	public void end(){
+		isRunning = false;
+		try {
+			this.join();
+		} catch (InterruptedException e) {
+		}
+	}
+	
 	@Override
 	public void run () {
 		Canvas canvas;
+		if(isRunning){
+//			canvas = surfaceHolder.lockCanvas(null);
+//			
+//			xStep = (int)(canvas.getWidth()/(xMax + xMin));
+//			yStep = (int)(canvas.getHeight()/(yMax = yMin));
+//			
+//			zero = new Point((int)(xStep * xMin), (int)(yStep * yMax));
+//			canvas.drawLine(0, zero.y, canvas.getWidth(), zero.y, axisColor);
+//			canvas.drawLine(zero.x, 0, zero.x, canvas.getHeight(), axisColor);
+//			getHolder().unlockCanvasAndPost(canvas);
+		}
+		
 		while (isRunning) {
-			long elapsedTime = System.currentTimeMillis() - prevTime;
 
 			canvas = null;
 			try {
 				canvas = surfaceHolder.lockCanvas(null);
-				synchronized (surfaceHolder) {//TODO рисовальная часть
-					canvas.drawColor((int) -elapsedTime);
+				synchronized (surfaceHolder) {
+					// TODO рисовальная часть
 				}
 			} finally {
 				if (canvas != null) {
